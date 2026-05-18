@@ -1,0 +1,19 @@
+# RStudio
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Deployment metadata (shinyapps.io — específico de la cuenta)
+rsconnect/
+
+# Claude Code (configuración local de la herramienta)
+.claude/
+
+# OS artifacts
+Thumbs.db
+.DS_Store
+
+# Archivos temporales
+*.log
+*.tmp
