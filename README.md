@@ -15,7 +15,7 @@ Accedé a la aplicación en vivo:
 
 ## Sobre la aplicación
 
-Dashboard desarrollado en R/Shiny para el **Ministerio de Producción de Entre Ríos**, orientado a:
+Dashboard desarrollado en R/Shiny con datos del **Ministerio de Producción de Entre Ríos**, orientado a:
 
 - Analizar la distribución y especialización del empleo privado registrado por departamento
 - Visualizar la cobertura geográfica e infraestructura de los parques industriales provinciales
@@ -119,4 +119,4 @@ También podés abrir el archivo `dashboard_parquesV2.Rproj` en RStudio y presio
 
 ## Créditos
 
-Desarrollado por el **Instituto de Seguimiento Económico (ISE)** para el Ministerio de Producción de Entre Ríos.
+Desarrollado por el **Instituto de Seguimiento Económico (ISE)** (FCG - UADER).
