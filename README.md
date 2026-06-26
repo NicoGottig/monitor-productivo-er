@@ -52,7 +52,7 @@ Mapa de calor estático que muestra la frecuencia de presencia de cada sector in
 ## Estructura del proyecto
 
 ```
-dashboard_parquesV2/
+monitor-productivo-er/
 ├── app.R                          # Aplicación Shiny principal (~1.100 líneas)
 ├── dashboard_parquesV2.Rproj      # Proyecto RStudio
 │
@@ -83,7 +83,7 @@ dashboard_parquesV2/
 
 ```r
 # 1. Clonar el repositorio
-# git clone https://github.com/<usuario>/dashboard_parquesV2.git
+# git clone https://github.com/NicoGottig/monitor-productivo-er.git
 
 # 2. Instalar dependencias
 install.packages(c(
@@ -92,8 +92,8 @@ install.packages(c(
   "plotly", "scales"
 ))
 
-# 3. Ejecutar la aplicación
-shiny::runApp("dashboard_parquesV2")
+# 3. Ejecutar la aplicación (desde la carpeta raíz del repo)
+shiny::runApp()
 ```
 
 También podés abrir el archivo `dashboard_parquesV2.Rproj` en RStudio y presionar **Run App** en el editor de `app.R`.

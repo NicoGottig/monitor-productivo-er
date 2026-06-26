@@ -207,13 +207,13 @@ popup_parque <- function(row) {
 
   stat_items <- list()
   if (!is.na(row$cant_empresas))
-    stat_items <- c(stat_items, sprintf('<div><div class="popup-label">Empresas</div><div style="font-size:13px;font-weight:600;color:#1e293b;">%s</div></div>', row$cant_empresas))
+    stat_items <- c(stat_items, sprintf('<div><div class="popup-label">Empresas instaladas</div><div style="font-size:13px;font-weight:600;color:#1e293b;">%s</div></div>', row$cant_empresas))
   if (!is.na(row$cant_personas_empleadas))
-    stat_items <- c(stat_items, sprintf('<div><div class="popup-label">Empleados</div><div style="font-size:13px;font-weight:600;color:#1e293b;">%s</div></div>', row$cant_personas_empleadas))
+    stat_items <- c(stat_items, sprintf('<div><div class="popup-label">Empleo informado</div><div style="font-size:13px;font-weight:600;color:#1e293b;">%s</div></div>', row$cant_personas_empleadas))
   if (!is.na(row$sup_total_ha))
-    stat_items <- c(stat_items, sprintf('<div><div class="popup-label">Superficie</div><div style="font-size:13px;font-weight:600;color:#1e293b;">%s ha</div></div>', row$sup_total_ha))
+    stat_items <- c(stat_items, sprintf('<div><div class="popup-label">Superficie total</div><div style="font-size:13px;font-weight:600;color:#1e293b;">%s ha</div></div>', row$sup_total_ha))
   if (!is.na(row$pct_sup_disponible))
-    stat_items <- c(stat_items, sprintf('<div><div class="popup-label">Área disp.</div><div style="font-size:13px;font-weight:600;color:#1e293b;">%.1f%%</div></div>', as.numeric(row$pct_sup_disponible)))
+    stat_items <- c(stat_items, sprintf('<div><div class="popup-label">Área disponible</div><div style="font-size:13px;font-weight:600;color:#1e293b;">%.1f%%</div></div>', as.numeric(row$pct_sup_disponible)))
 
   stats_grid <- if (length(stat_items) > 0)
     paste0('<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem 0.6rem;margin:0.4rem 0 0.5rem;">',
@@ -226,15 +226,15 @@ popup_parque <- function(row) {
     sprintf('<div style="color:#64748b;font-size:12px;margin-bottom:0.3rem;">%s</div>', row$departamento),
     promo_html, stats_grid,
     '<div class="popup-section">',
-    '<div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;">Sectores instalados</div>',
+    '<div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;">Rubros presentes</div>',
     sprintf('<div style="font-size:12px;color:#374151;">%s</div>', trunc_lista(row$rubros_instalados, 5)),
     '</div>',
     '<div class="popup-section">',
-    '<div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;">Empresas instaladas</div>',
+    '<div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;">Empresas</div>',
     sprintf('<div style="font-size:12px;color:#374151;">%s</div>', trunc_lista(row$empresas_instaladas, 5)),
     '</div>',
     '<div class="popup-section">',
-    '<div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;">Infraestructura</div>',
+    '<div style="font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;">Servicios</div>',
     infra_html(row),
     '</div>',
     link_html,
@@ -362,10 +362,14 @@ ui <- fluidPage(
     tags$div(class = "app-wrapper",
       tags$div(class = "header-content",
         tags$div(class = "header-text",
-          tags$h1("Monitor de actores productivos"),
+          tags$h1("Monitor de actores productivos de Entre Ríos"),
           tags$p(class = "lead",
-            "Versión de prueba — Entre Ríos. Distribución del empleo privado registrado, ",
-            "localización de parques industriales y especialización sectorial por departamento."
+            "Indicadores sobre empleo privado registrado, parques industriales y sectores por departamento. ",
+            "El monitor permite explorar datos, comparar territorios y orientar preguntas para informes, diagnósticos y decisiones."
+          ),
+          tags$p(class = "lead-caveat",
+            "Los indicadores muestran patrones y diferencias entre departamentos. No reemplazan un diagnóstico. ",
+            "Para tomar decisiones, deben leerse junto con información local, normativa, infraestructura, actores y evolución en el tiempo."
           )
         ),
         tags$div(class = "header-logo",
@@ -382,8 +386,17 @@ ui <- fluidPage(
     tags$div(class = "section-container", id = "sec-empleo",
       tags$h2(class = "section-title", "Distribución de los puestos de trabajo"),
       tags$p(class = "section-desc",
-        "Visualizá el empleo privado registrado por departamento, seleccionando uno o varios sectores, ",
-        "o calculando la especialización relativa de un sector respecto al total provincial."
+        "Esta sección muestra cómo se distribuye el empleo privado registrado en Entre Ríos. ",
+        "Permite ver en qué departamentos se concentran los puestos y qué sectores explican esa distribución."
+      ),
+      tags$ul(class = "section-questions",
+        tags$li("¿Dónde se concentra el empleo privado registrado?"),
+        tags$li("¿Qué sectores tienen más puestos en cada departamento?"),
+        tags$li("¿Cómo cambia la distribución según el año, el mes o el sector seleccionado?")
+      ),
+      tags$p(class = "section-caveat",
+        "La cantidad de puestos muestra volumen, no especialización. ",
+        "Un departamento puede tener muchos puestos porque tiene mayor población o más actividad económica general."
       ),
 
       # Toggle de modo
@@ -405,10 +418,7 @@ ui <- fluidPage(
             `data-target` = "especializacion", "Especialización relativa")
         )
       ),
-      tags$p(class = "filter-help",
-        tags$b("Cantidad de puestos:"), " total de empleos privados registrados por departamento para el período seleccionado. ",
-        tags$b("Especialización relativa:"), " cociente de localización (LQ) que indica si un departamento concentra más o menos ese sector respecto al promedio provincial."
-      ),
+      uiOutput("indicador_help"),
 
       fluidRow(
         # Panel de filtros
@@ -433,9 +443,15 @@ ui <- fluidPage(
     tags$div(class = "section-container", id = "sec-parques",
       tags$h2(class = "section-title", "Parques Industriales"),
       tags$p(class = "section-desc",
-        "Localización, infraestructura disponible y características de los 38 parques industriales de Entre Ríos. ",
-        "El color de cada parque indica cuánto se aleja del promedio provincial de servicios. ",
-        "Los parques con corona dorada tienen promociones impositivas."
+        "Esta sección muestra la ubicación y características de los parques industriales de Entre Ríos. ",
+        "Incluye empresas, empleo, superficie, área disponible, servicios, rubros y promociones impositivas."
+      ),
+      tags$ul(class = "section-questions",
+        tags$li("¿Dónde están los parques industriales?"),
+        tags$li("¿Qué parques tienen más empresas y empleo?"),
+        tags$li("¿Qué parques tienen servicios disponibles?"),
+        tags$li("¿Dónde hay área disponible?"),
+        tags$li("¿Qué parques cuentan con promociones impositivas?")
       ),
 
       fluidRow(
@@ -463,7 +479,8 @@ ui <- fluidPage(
               tags$button(type = "button", class = "seg-btn seg-promo-btn",
                 `data-promo` = "true", "Solo con promoción")
             ),
-            tags$p(class = "filter-help", "Activá para mostrar únicamente los parques que cuentan con beneficios de promoción impositiva municipal o provincial. En el mapa se identifican con una corona dorada."),
+            tags$p(class = "filter-help", "Permite ver qué parques cuentan con beneficios de promoción impositiva. En el mapa se identifican con una corona dorada."),
+            tags$p(class = "filter-caveat", "El indicador muestra si existe el beneficio. No mide si el beneficio generó nuevas empresas, empleo o inversiones."),
 
             # Filtro por servicio de infraestructura (multi-select)
             selectizeInput("servicio_infra", "Servicios de infraestructura",
@@ -472,7 +489,8 @@ ui <- fluidPage(
               multiple = TRUE,
               options  = list(placeholder = "Todos los servicios")
             ),
-            tags$p(class = "filter-help", "Mostrá solo los parques que cuentan con todos los servicios seleccionados. Sin selección se muestran todos los parques."),
+            tags$p(class = "filter-help", "Seleccioná uno o varios servicios. El mapa muestra los parques que cuentan con todos los servicios seleccionados. Si no elegís ninguno, se muestran todos los parques."),
+            tags$p(class = "filter-caveat", "El indicador muestra disponibilidad declarada. No mide calidad, capacidad ni estado del servicio."),
 
             # Filtro por rubros instalados
             selectizeInput("filtro_rubros", "Rubros instalados",
@@ -481,7 +499,8 @@ ui <- fluidPage(
               multiple = TRUE,
               options  = list(placeholder = "Todos los rubros")
             ),
-            tags$p(class = "filter-help", "Mostrá solo los parques que tienen al menos uno de los rubros seleccionados. Sin selección se muestran todos."),
+            tags$p(class = "filter-help", "Seleccioná rubros para ver en qué parques están presentes. Sirve para identificar actividades y comparar departamentos."),
+            tags$p(class = "filter-caveat", "La presencia de un rubro no mide tamaño económico. No indica empleo, producción ni facturación."),
 
             # Filtro por empresas instaladas
             selectizeInput("filtro_empresas", "Empresas instaladas",
@@ -511,8 +530,17 @@ ui <- fluidPage(
     tags$div(class = "section-container", id = "sec-heatmap",
       tags$h2(class = "section-title", "Sectores industriales por departamento"),
       tags$p(class = "section-desc",
-        "Frecuencia de aparición de cada sector industrial en los parques de cada departamento. ",
-        "El color más intenso indica mayor presencia de ese sector."
+        "Este gráfico muestra cuántas veces aparece cada rubro industrial en los parques de cada departamento. ",
+        "El color más intenso indica mayor cantidad de parques con ese rubro."
+      ),
+      tags$ul(class = "section-questions",
+        tags$li("¿Qué rubros aparecen en cada departamento?"),
+        tags$li("¿Qué departamentos tienen más variedad de rubros?"),
+        tags$li("¿Qué rubros están más concentrados?")
+      ),
+      tags$p(class = "section-caveat",
+        "El gráfico mide presencia. Un rubro puede aparecer muchas veces y tener poco empleo, ",
+        "o aparecer pocas veces y concentrar mucha actividad."
       ),
       tags$p(class = "heatmap-note",
         "Datos basados en los rubros declarados por cada parque industrial."
@@ -522,7 +550,11 @@ ui <- fluidPage(
 
     # ── PIE DE PÁGINA ─────────────────────────────────────────
     tags$div(class = "app-footer",
-      "Fuente: Ministerio de Producción de Entre Ríos · INDEC · datos.produccion.gob.ar · IGN"
+      "Fuente: Ministerio de Producción de Entre Ríos · INDEC · datos.produccion.gob.ar · IGN",
+      tags$p(class = "footer-note",
+        "Los datos dependen de la cobertura y actualización de cada fuente. ",
+        "Conviene revisar período, unidad de análisis y alcance antes de usarlos para decisiones."
+      )
     )
   )
 )
@@ -537,33 +569,50 @@ server <- function(input, output, session) {
       tagList(
         selectInput("anio_emp", "Año",
           choices = setNames(ANIOS, ANIOS), selected = max(ANIOS)),
-        tags$p(class = "filter-help", "Año del relevamiento de empleo privado registrado."),
+        tags$p(class = "filter-help", "Seleccioná el año de referencia."),
         selectInput("mes_emp", "Mes",
           choices  = setNames(meses_ini_emp, MESES_ES[meses_ini_emp]),
           selected = meses_ini_emp[1]),
-        tags$p(class = "filter-help", "Mes del período a analizar. Solo se muestran los meses con datos disponibles para el año seleccionado."),
+        tags$p(class = "filter-help", "Seleccioná el mes a analizar. Solo aparecen meses con datos disponibles."),
         selectizeInput("sectores_emp", "Sector(es)",
           choices  = SECTORES,
           multiple = TRUE,
           options  = list(placeholder = "Todos los sectores combinados")),
         tags$p(class = "filter-help",
-          "Filtrá por una o varias industrias. Sin selección, se muestran todos los sectores sumados. Con varios sectores seleccionados, se acumulan sus puestos de trabajo.")
+          "Seleccioná uno o varios sectores. Si no elegís ninguno, se muestra el total del empleo privado registrado. Si elegís varios, los puestos se suman.")
       )
     } else {
       meses_ini_esp <- meses_de_anio(max(ANIOS))
       tagList(
         selectInput("anio_esp", "Año",
           choices = setNames(ANIOS, ANIOS), selected = max(ANIOS)),
-        tags$p(class = "filter-help", "Año del relevamiento de empleo privado registrado."),
+        tags$p(class = "filter-help", "Seleccioná el año de referencia."),
         selectInput("mes_esp", "Mes",
           choices  = setNames(meses_ini_esp, MESES_ES[meses_ini_esp]),
           selected = meses_ini_esp[1]),
-        tags$p(class = "filter-help", "Mes del período a analizar. Solo se muestran los meses con datos disponibles para el año seleccionado."),
+        tags$p(class = "filter-help", "Seleccioná el mes a analizar. Solo aparecen meses con datos disponibles."),
         selectInput("sector_esp", "Sector",
           choices  = SECTORES,
           selected = SECTORES[1]),
         tags$p(class = "filter-help",
           "Sector a analizar. El mapa muestra si cada departamento está más o menos especializado en este sector respecto al promedio provincial: LQ > 1 indica mayor concentración relativa, LQ < 1 indica menor concentración.")
+      )
+    }
+  })
+
+  # ── TEXTO DINÁMICO DE INDICADOR DE EMPLEO ───────────────────
+  output$indicador_help <- renderUI({
+    if (input$modo_empleo == "cantidad") {
+      tags$p(class = "filter-help",
+        "Muestra el total de puestos de trabajo privados registrados por departamento para el período seleccionado. ",
+        "Más puestos no significa mayor especialización."
+      )
+    } else {
+      tags$p(class = "filter-help",
+        "Compara el peso de un sector en cada departamento con el peso de ese sector en el total provincial. ",
+        "Si el valor es mayor que 1, el sector tiene más presencia relativa que en el promedio provincial. ",
+        "Si es menor que 1, tiene menos presencia relativa. ",
+        "Una especialización alta no significa muchos puestos: puede haber especialización alta en un departamento con poco empleo total."
       )
     }
   })
@@ -608,7 +657,7 @@ server <- function(input, output, session) {
       total <- sum(datos$valor, na.rm = TRUE)
       top_depto <- datos |> filter(!is.na(valor)) |> slice_max(valor, n = 1)
 
-      # Sector predominante: top sector por puestos en el período seleccionado
+      # Sector con más puestos: top sector por puestos en el período seleccionado
       df_sec <- empleo |>
         filter(anio == input$anio_emp, mes == input$mes_emp)
       if (!is.null(input$sectores_emp) && length(input$sectores_emp) > 0)
@@ -629,7 +678,7 @@ server <- function(input, output, session) {
         fluidRow(
           column(6,
             tags$div(class = "stat-card",
-              tags$div(class = "stat-label", "Total provincial"),
+              tags$div(class = "stat-label", "Puestos provinciales"),
               tags$div(class = "stat-value",
                 format(total, big.mark = ".", decimal.mark = ",", scientific = FALSE)),
               tags$div(class = "stat-note", "puestos de trabajo")
@@ -637,7 +686,7 @@ server <- function(input, output, session) {
           ),
           column(6,
             tags$div(class = "stat-card",
-              tags$div(class = "stat-label", "Sector predominante"),
+              tags$div(class = "stat-label", "Sector con más puestos"),
               tags$div(class = "stat-value",
                 style = "font-size:0.9rem;line-height:1.35;", top_sector),
               tags$div(class = "stat-note", pct_sector)

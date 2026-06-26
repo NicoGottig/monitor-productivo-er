@@ -17,3 +17,8 @@ Thumbs.db
 # Archivos temporales
 *.log
 *.tmp
+
+# Documentos de trabajo (locales, no parte de la app)
+CLAUDE.md
+Tablero.docx
+Tablero_extracted/
